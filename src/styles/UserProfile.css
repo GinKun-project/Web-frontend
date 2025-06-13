@@ -1,0 +1,58 @@
+.profile-popup {
+  position: absolute;
+  top: calc(3rem + 20px);
+  right: 20px;
+  background: #1c1c2e;
+  color: #ff007f;
+  border: 2px solid #69f0ff;
+  padding: 1rem;
+  width: 260px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  border-radius: 8px;
+  box-shadow: 0 0 12px #69f0ff;
+  z-index: 9999;
+}
+
+.profile-popup::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid #1c1c2e;
+  z-index: 9998;
+}
+
+.profile-popup p {
+  margin: 0.4rem 0;
+  line-height: 1.4;
+}
+
+.profile-popup h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  color: #69f0ff;
+}
+
+.profile-logout-btn {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: #ff007f;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 0.75rem;
+  transition: background 0.2s;
+}
+
+.profile-logout-btn:hover {
+  background: #ff4f91;
+}

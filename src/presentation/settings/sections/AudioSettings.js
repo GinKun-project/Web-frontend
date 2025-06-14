@@ -1,23 +1,24 @@
-import React, { useState, useEffect } from "react";
-import { saveSetting, getSetting } from "../../../infrastructure/storage/settingsStorage";
+import React, { useEffect, useState } from "react";
+import {
+  getSettingUseCase,
+  updateSettingUseCase,
+} from "../../../domain/settings/usecases";
 
 export default function AudioSettings() {
   const [musicVolume, setMusicVolume] = useState(70);
   const [sfxVolume, setSfxVolume] = useState(80);
   const [mute, setMute] = useState(false);
 
-  // Load on mount
   useEffect(() => {
-    setMusicVolume(getSetting("audio_music", 70));
-    setSfxVolume(getSetting("audio_sfx", 80));
-    setMute(getSetting("audio_mute", false));
+    setMusicVolume(getSettingUseCase("musicVolume"));
+    setSfxVolume(getSettingUseCase("sfxVolume"));
+    setMute(getSettingUseCase("muteAll"));
   }, []);
 
-  // Save when changed
   useEffect(() => {
-    saveSetting("audio_music", musicVolume);
-    saveSetting("audio_sfx", sfxVolume);
-    saveSetting("audio_mute", mute);
+    updateSettingUseCase("musicVolume", musicVolume);
+    updateSettingUseCase("sfxVolume", sfxVolume);
+    updateSettingUseCase("muteAll", mute);
   }, [musicVolume, sfxVolume, mute]);
 
   return (

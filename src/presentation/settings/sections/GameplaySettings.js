@@ -1,26 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { saveSetting, getSetting } from "../../../infrastructure/storage/settingsStorage";
+import {
+  getSettingUseCase,
+  updateSettingUseCase,
+} from "../../../domain/settings/usecases";
 
 export default function GameplaySettings() {
   const [open, setOpen] = useState(true);
-
   const [difficulty, setDifficulty] = useState("Normal");
   const [controlScheme, setControlScheme] = useState("WASD");
   const [rounds, setRounds] = useState("Best of 3");
 
-  // Load settings on mount
   useEffect(() => {
-    setDifficulty(getSetting("gameplay_difficulty", "Normal"));
-    setControlScheme(getSetting("gameplay_control", "WASD"));
-    setRounds(getSetting("gameplay_rounds", "Best of 3"));
+    setDifficulty(getSettingUseCase("difficulty"));
+    setControlScheme(getSettingUseCase("controlScheme"));
+    setRounds(getSettingUseCase("rounds"));
   }, []);
 
-  // Save settings on change
   useEffect(() => {
-    saveSetting("gameplay_difficulty", difficulty);
-    saveSetting("gameplay_control", controlScheme);
-    saveSetting("gameplay_rounds", rounds);
+    updateSettingUseCase("difficulty", difficulty);
+    updateSettingUseCase("controlScheme", controlScheme);
+    updateSettingUseCase("rounds", rounds);
   }, [difficulty, controlScheme, rounds]);
 
   return (

@@ -18,6 +18,7 @@ function AppWrapper() {
 
 function App() {
   const [user, setUser] = useState(null);
+  const [adminToken, setAdminToken] = useState(localStorage.getItem("adminToken") || null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,12 +43,20 @@ function App() {
   const handleLogout = () => {
     localStorage.clear();
     setUser(null);
+    setAdminToken(null);
     navigate("/");
+  };
+
+  const handleAdminLogin = (token) => {
+    localStorage.setItem("adminToken", token);
+    setAdminToken(token);
+    navigate("/admin");
   };
 
   return (
     <div className="app-bg">
       <Routes>
+        {/* User Routes */}
         <Route
           path="/"
           element={
@@ -59,9 +68,7 @@ function App() {
         />
         <Route
           path="/signup"
-          element={
-            <SignupScreen onLogin={() => navigate("/")} />
-          }
+          element={<SignupScreen onLogin={() => navigate("/")} />}
         />
         <Route
           path="/game"
@@ -75,19 +82,18 @@ function App() {
         />
         <Route
           path="/ingame"
-          element={
-            user ? <InGameScreen user={user} /> : <Navigate to="/" />
-          }
+          element={user ? <InGameScreen user={user} /> : <Navigate to="/" />}
         />
-        <Route path="/admin-login" element={<AdminLogin />} />
+
+        {/* Admin Routes */}
+        <Route
+          path="/admin-login"
+          element={<AdminLogin onLogin={handleAdminLogin} />}
+        />
         <Route
           path="/admin"
           element={
-            localStorage.getItem("adminToken") ? (
-              <AdminDashboard />
-            ) : (
-              <Navigate to="/admin-login" />
-            )
+            adminToken ? <AdminDashboard /> : <Navigate to="/admin-login" />
           }
         />
       </Routes>

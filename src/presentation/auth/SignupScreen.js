@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import axios from "axios";
 import "../../styles/Auth.css";
+import { signupUseCase } from '../../domain/auth/usecases';
 
 const avatars = [
   { label: "Shadow Ninja", value: "ninja" },
@@ -33,10 +33,10 @@ export default function SignupScreen({ onLogin }) {
     setError("");
 
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/signup", form);
-      setMsg(res.data.message || "Signup successful!");
+      const res = await signupUseCase(form); // Using clean architecture
+      setMsg(res.message || "Signup successful!");
     } catch (err) {
-      const message = err.response?.data?.message || "Signup failed.";
+      const message = err.message || "Signup failed.";
       setError(message);
     }
   }

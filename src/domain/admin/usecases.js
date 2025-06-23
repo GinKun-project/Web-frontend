@@ -11,9 +11,10 @@ import {
 } from '../../data/admin/adminApi';
 
 // Admin login use case
-export const adminLoginUseCase = async (username, password) => {
-  return await loginAdmin(username, password);
+export const adminLoginUseCase = async (credentials) => {
+  return await adminApi.login(credentials);
 };
+
 
 // Players CRUD use cases
 export const getAllPlayersUseCase = async (token) => {

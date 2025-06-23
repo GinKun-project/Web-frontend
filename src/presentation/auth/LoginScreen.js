@@ -13,7 +13,7 @@ export default function LoginScreen({ onSignup, onLogin }) {
 
     try {
       // Make login request to backend
-      const res = await loginUseCase(email, password);   
+      const res = await loginUseCase({email, password});   
 
       // Save token and user to localStorage
       localStorage.setItem("authToken", res.token);

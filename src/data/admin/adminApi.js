@@ -1,55 +1,54 @@
-import axios from 'axios';
+import axios from "axios";
 
-const BASE_URL = 'http://localhost:5000/api';
+const API_BASE = "http://localhost:5000/api";
 
-export const adminApi = {
-  login: async (username, password) => {
-    const response = await axios.post(`${BASE_URL}/admin/login`, {
-      username,
-      password,
-    });
-    return response.data;
-  },
+// Admin login
+export const loginAdmin = async (username, password) => {
+  const res = await axios.post(`${API_BASE}/admin/login`, {
+    username,
+    password,
+  });
+  return res.data;
+};
 
-  // Player CRUD
-  getPlayers: async (token) =>
-    axios.get(`${BASE_URL}/admin/players`, {
-      headers: { Authorization: `Bearer ${token}` },
-    }),
+// Player CRUD
+export const fetchAllPlayers = async () => {
+  const res = await axios.get(`${API_BASE}/admin/players`);
+  return res.data;
+};
 
-  createPlayer: async (data, token) =>
-    axios.post(`${BASE_URL}/admin/players`, data, {
-      headers: { Authorization: `Bearer ${token}` },
-    }),
+export const createPlayer = async (data) => {
+  const res = await axios.post(`${API_BASE}/admin/players`, data);
+  return res.data;
+};
 
-  updatePlayer: async (id, data, token) =>
-    axios.put(`${BASE_URL}/admin/players/${id}`, data, {
-      headers: { Authorization: `Bearer ${token}` },
-    }),
+export const updatePlayer = async (id, data) => {
+  const res = await axios.put(`${API_BASE}/admin/players/${id}`, data);
+  return res.data;
+};
 
-  deletePlayer: async (id, token) =>
-    axios.delete(`${BASE_URL}/admin/players/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    }),
+export const deletePlayer = async (id) => {
+  const res = await axios.delete(`${API_BASE}/admin/players/${id}`);
+  return res.data;
+};
 
-  // Character CRUD
-  getCharacters: async (token) =>
-    axios.get(`${BASE_URL}/admin/characters`, {
-      headers: { Authorization: `Bearer ${token}` },
-    }),
+// Character CRUD
+export const fetchAllCharacters = async () => {
+  const res = await axios.get(`${API_BASE}/admin/characters`);
+  return res.data;
+};
 
-  createCharacter: async (data, token) =>
-    axios.post(`${BASE_URL}/admin/characters`, data, {
-      headers: { Authorization: `Bearer ${token}` },
-    }),
+export const createCharacter = async (data) => {
+  const res = await axios.post(`${API_BASE}/admin/characters`, data);
+  return res.data;
+};
 
-  updateCharacter: async (id, data, token) =>
-    axios.put(`${BASE_URL}/admin/characters/${id}`, data, {
-      headers: { Authorization: `Bearer ${token}` },
-    }),
+export const updateCharacter = async (id, data) => {
+  const res = await axios.put(`${API_BASE}/admin/characters/${id}`, data);
+  return res.data;
+};
 
-  deleteCharacter: async (id, token) =>
-    axios.delete(`${BASE_URL}/admin/characters/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    }),
+export const deleteCharacter = async (id) => {
+  const res = await axios.delete(`${API_BASE}/admin/characters/${id}`);
+  return res.data;
 };

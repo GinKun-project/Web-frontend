@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
 import LoginScreen from "./presentation/auth/LoginScreen";
 import SignupScreen from "./presentation/auth/SignupScreen";
@@ -11,10 +11,15 @@ import AdminDashboard from "./presentation/admin/AdminDashboard";
 
 import "./styles/App.css";
 
+// ✅ Just return <App /> without BrowserRouter
+function AppWrapper() {
+  return <App />;
+}
+
 function App() {
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
-  // ✅ Auto-login if token exists
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     const userData = localStorage.getItem("userData");
@@ -29,24 +34,25 @@ function App() {
     if (userData) {
       setUser(JSON.parse(userData));
     } else {
-      setUser({ username }); // fallback
+      setUser({ username });
     }
+    navigate("/game");
   };
 
   const handleLogout = () => {
     localStorage.clear();
     setUser(null);
+    navigate("/");
   };
 
   return (
     <div className="app-bg">
       <Routes>
-        {/* User Auth Routes */}
         <Route
           path="/"
           element={
             <LoginScreen
-              onSignup={() => {}}
+              onSignup={() => navigate("/signup")}
               onLogin={handleLogin}
             />
           }
@@ -54,9 +60,7 @@ function App() {
         <Route
           path="/signup"
           element={
-            <SignupScreen
-              onLogin={() => {}}
-            />
+            <SignupScreen onLogin={() => navigate("/")} />
           }
         />
         <Route
@@ -75,8 +79,6 @@ function App() {
             user ? <InGameScreen user={user} /> : <Navigate to="/" />
           }
         />
-
-        {/* Admin Routes */}
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route
           path="/admin"
@@ -93,4 +95,4 @@ function App() {
   );
 }
 
-export default App;
+export default AppWrapper;

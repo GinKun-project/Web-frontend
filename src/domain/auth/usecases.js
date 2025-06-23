@@ -2,13 +2,13 @@ import { authApi } from "../../data/auth/authApi";
 import { saveSetting, getSetting } from "../../infrastructure/storage/settingsStorage";
 
 // Auth Use Cases
-export async function signupUserUseCase(form) {
-  return await authApi.signup(form);
-}
+export const signupUseCase = async (data) => {
+  return await authApi.signup(data);
+};
 
-export async function loginUserUseCase(username, password) {
-  return await authApi.login({ username, password });
-}
+export const loginUseCase = async (data) => {
+  return await authApi.login(data);
+};
 
 // === Settings Use Cases ===
 

@@ -1,5 +1,6 @@
+// Corrected import and structure
 import {
-  loginAdmin,
+  adminLogin,
   fetchAllPlayers,
   createPlayer,
   updatePlayer,
@@ -8,13 +9,12 @@ import {
   createCharacter,
   updateCharacter,
   deleteCharacter
-} from '../../data/admin/adminApi';
+} from '../../data/admin/adminApi'; 
 
 // Admin login use case
 export const adminLoginUseCase = async (credentials) => {
-  return await adminApi.login(credentials);
+  return await adminLogin(credentials); // ✅ Use the actual function, not undefined adminApi
 };
-
 
 // Players CRUD use cases
 export const getAllPlayersUseCase = async (token) => {

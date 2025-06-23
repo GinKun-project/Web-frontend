@@ -11,7 +11,7 @@ import AdminDashboard from "./presentation/admin/AdminDashboard";
 
 import "./styles/App.css";
 
-// ✅ Just return <App /> without BrowserRouter
+// Just return <App /> without BrowserRouter
 function AppWrapper() {
   return <App />;
 }

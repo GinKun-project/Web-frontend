@@ -26,7 +26,7 @@ export default function AdminLogin() {
       if (res?.token) {
         localStorage.setItem("adminToken", res.token);
         localStorage.setItem("adminUsername", res.username);
-        navigate("/admin");
+        navigate("/admin"); 
       } else {
         setError("Invalid response from server.");
       }

@@ -93,9 +93,14 @@ function App() {
         <Route
           path="/admin"
           element={
-            adminToken ? <AdminDashboard /> : <Navigate to="/admin-login" />
-          }
-        />
+            localStorage.getItem("adminToken") ? (
+              <AdminDashboard />
+            ) : (
+              <Navigate to="/admin-login" />
+            )
+         }
+      />
+
       </Routes>
     </div>
   );

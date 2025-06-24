@@ -11,24 +11,28 @@ import AdminDashboard from "./presentation/admin/AdminDashboard";
 
 import "./styles/App.css";
 
-// Just return <App /> without BrowserRouter
 function AppWrapper() {
   return <App />;
 }
 
 function App() {
   const [user, setUser] = useState(null);
-  const [adminToken, setAdminToken] = useState(localStorage.getItem("adminToken") || null);
+  const [adminToken, setAdminToken] = useState(localStorage.getItem("adminToken"));
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     const userData = localStorage.getItem("userData");
+    const adminToken = localStorage.getItem("adminToken");
 
-    if (token && userData) {
+    if (adminToken) {
+      setAdminToken(adminToken);
+      navigate("/admin");
+    } else if (token && userData) {
       setUser(JSON.parse(userData));
+      navigate("/game");
     }
-  }, []);
+  }, [navigate]);
 
   const handleLogin = (username) => {
     const userData = localStorage.getItem("userData");
@@ -40,17 +44,17 @@ function App() {
     navigate("/game");
   };
 
+  const handleAdminLogin = (token) => {
+    localStorage.setItem("adminToken", token);
+    setAdminToken(token);
+    navigate("/admin");
+  };
+
   const handleLogout = () => {
     localStorage.clear();
     setUser(null);
     setAdminToken(null);
     navigate("/");
-  };
-
-  const handleAdminLogin = (token) => {
-    localStorage.setItem("adminToken", token);
-    setAdminToken(token);
-    navigate("/admin");
   };
 
   return (
@@ -93,14 +97,9 @@ function App() {
         <Route
           path="/admin"
           element={
-            localStorage.getItem("adminToken") ? (
-              <AdminDashboard />
-            ) : (
-              <Navigate to="/admin-login" />
-            )
-         }
-      />
-
+            adminToken ? <AdminDashboard /> : <Navigate to="/admin-login" />
+          }
+        />
       </Routes>
     </div>
   );

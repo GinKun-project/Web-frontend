@@ -82,9 +82,7 @@
 }
 
 .admin-tabs {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 0;
 }
 
 .admin-tab {
@@ -193,4 +191,56 @@
 
 .crud-table button:hover {
   opacity: 0.9;
+}
+
+/* Admin Navbar */
+.admin-navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #23234a;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+}
+.admin-navbar-title {
+  font-size: 1.6rem;
+  font-family: 'Orbitron', sans-serif;
+  color: #e94560;
+  letter-spacing: 1px;
+  font-weight: bold;
+}
+.admin-navbar-tabs {
+  display: flex;
+  gap: 1.5rem;
+}
+.admin-navbar-tab {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.1rem;
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  font-family: inherit;
+}
+.admin-navbar-tab.active, .admin-navbar-tab:hover {
+  background: #e94560;
+  color: #fff;
+}
+.admin-navbar-logout {
+  background: #e94560;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1.2rem;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: inherit;
+}
+.admin-navbar-logout:hover {
+  background: #c82333;
 }

@@ -9,10 +9,23 @@ import {
 export default function PlayersCrud() {
   const [players, setPlayers] = useState([]);
   const [newPlayer, setNewPlayer] = useState({ username: "", level: 1 });
+  const [error, setError] = useState(null);
 
   const fetchPlayers = async () => {
-    const res = await getAllPlayersUseCase();
-    setPlayers(res);
+    try {
+      const res = await getAllPlayersUseCase();
+
+      if (res?.success && Array.isArray(res.data)) {
+        setPlayers(res.data);
+      } else {
+        setPlayers([]);
+        setError("Failed to load players");
+      }
+    } catch (err) {
+      console.error("Fetch error:", err.message);
+      setPlayers([]);
+      setError("Network error while loading players");
+    }
   };
 
   useEffect(() => {
@@ -21,24 +34,38 @@ export default function PlayersCrud() {
 
   const handleCreate = async () => {
     if (!newPlayer.username) return;
-    await createPlayerUseCase(newPlayer);
-    setNewPlayer({ username: "", level: 1 });
-    fetchPlayers();
+    try {
+      await createPlayerUseCase(newPlayer);
+      setNewPlayer({ username: "", level: 1 });
+      fetchPlayers();
+    } catch (err) {
+      setError("Failed to create player");
+    }
   };
 
   const handleUpdate = async (id, updatedData) => {
-    await updatePlayerUseCase(id, updatedData);
-    fetchPlayers();
+    try {
+      await updatePlayerUseCase(id, updatedData);
+      fetchPlayers();
+    } catch (err) {
+      setError("Failed to update player");
+    }
   };
 
   const handleDelete = async (id) => {
-    await deletePlayerUseCase(id);
-    fetchPlayers();
+    try {
+      await deletePlayerUseCase(id);
+      fetchPlayers();
+    } catch (err) {
+      setError("Failed to delete player");
+    }
   };
 
   return (
     <div className="crud-panel">
       <h3>🎮 Players Management</h3>
+
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
       <div className="crud-create">
         <input
@@ -65,39 +92,40 @@ export default function PlayersCrud() {
           </tr>
         </thead>
         <tbody>
-          {players.map((player) => (
-            <tr key={player._id}>
-              <td>
-                <input
-                  value={player.username}
-                  onChange={(e) =>
-                    setPlayers((prev) =>
-                      prev.map((p) =>
-                        p._id === player._id ? { ...p, username: e.target.value } : p
+          {Array.isArray(players) &&
+            players.map((player) => (
+              <tr key={player._id}>
+                <td>
+                  <input
+                    value={player.username}
+                    onChange={(e) =>
+                      setPlayers((prev) =>
+                        prev.map((p) =>
+                          p._id === player._id ? { ...p, username: e.target.value } : p
+                        )
                       )
-                    )
-                  }
-                />
-              </td>
-              <td>
-                <input
-                  type="number"
-                  value={player.level}
-                  onChange={(e) =>
-                    setPlayers((prev) =>
-                      prev.map((p) =>
-                        p._id === player._id ? { ...p, level: Number(e.target.value) } : p
+                    }
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    value={player.level}
+                    onChange={(e) =>
+                      setPlayers((prev) =>
+                        prev.map((p) =>
+                          p._id === player._id ? { ...p, level: Number(e.target.value) } : p
+                        )
                       )
-                    )
-                  }
-                />
-              </td>
-              <td>
-                <button onClick={() => handleUpdate(player._id, player)}>Save</button>
-                <button onClick={() => handleDelete(player._id)}>Delete</button>
-              </td>
-            </tr>
-          ))}
+                    }
+                  />
+                </td>
+                <td>
+                  <button onClick={() => handleUpdate(player._id, player)}>Save</button>
+                  <button onClick={() => handleDelete(player._id)}>Delete</button>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>

@@ -9,10 +9,21 @@ import {
 export default function CharactersCrud() {
   const [characters, setCharacters] = useState([]);
   const [newChar, setNewChar] = useState({ name: "", type: "" });
+  const [error, setError] = useState(null);
 
   const fetchCharacters = async () => {
-    const res = await getAllCharactersUseCase();
-    setCharacters(res);
+    try {
+      const res = await getAllCharactersUseCase();
+      if (res?.success && Array.isArray(res.data)) {
+        setCharacters(res.data);
+      } else {
+        setCharacters([]);
+        setError("Invalid character list format");
+      }
+    } catch (err) {
+      console.error("Character fetch error:", err.message);
+      setError("Network error while fetching characters");
+    }
   };
 
   useEffect(() => {
@@ -21,24 +32,38 @@ export default function CharactersCrud() {
 
   const handleCreate = async () => {
     if (!newChar.name || !newChar.type) return;
-    await createCharacterUseCase(newChar);
-    setNewChar({ name: "", type: "" });
-    fetchCharacters();
+    try {
+      await createCharacterUseCase(newChar);
+      setNewChar({ name: "", type: "" });
+      fetchCharacters();
+    } catch (err) {
+      setError("Error creating character");
+    }
   };
 
   const handleUpdate = async (id, updatedData) => {
-    await updateCharacterUseCase(id, updatedData);
-    fetchCharacters();
+    try {
+      await updateCharacterUseCase(id, updatedData);
+      fetchCharacters();
+    } catch (err) {
+      setError("Error updating character");
+    }
   };
 
   const handleDelete = async (id) => {
-    await deleteCharacterUseCase(id);
-    fetchCharacters();
+    try {
+      await deleteCharacterUseCase(id);
+      fetchCharacters();
+    } catch (err) {
+      setError("Error deleting character");
+    }
   };
 
   return (
     <div className="crud-panel">
       <h3>🧙‍♂️ Characters Management</h3>
+
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
       <div className="crud-create">
         <input
@@ -65,38 +90,39 @@ export default function CharactersCrud() {
           </tr>
         </thead>
         <tbody>
-          {characters.map((char) => (
-            <tr key={char._id}>
-              <td>
-                <input
-                  value={char.name}
-                  onChange={(e) =>
-                    setCharacters((prev) =>
-                      prev.map((c) =>
-                        c._id === char._id ? { ...c, name: e.target.value } : c
+          {Array.isArray(characters) &&
+            characters.map((char) => (
+              <tr key={char._id}>
+                <td>
+                  <input
+                    value={char.name}
+                    onChange={(e) =>
+                      setCharacters((prev) =>
+                        prev.map((c) =>
+                          c._id === char._id ? { ...c, name: e.target.value } : c
+                        )
                       )
-                    )
-                  }
-                />
-              </td>
-              <td>
-                <input
-                  value={char.type}
-                  onChange={(e) =>
-                    setCharacters((prev) =>
-                      prev.map((c) =>
-                        c._id === char._id ? { ...c, type: e.target.value } : c
+                    }
+                  />
+                </td>
+                <td>
+                  <input
+                    value={char.type}
+                    onChange={(e) =>
+                      setCharacters((prev) =>
+                        prev.map((c) =>
+                          c._id === char._id ? { ...c, type: e.target.value } : c
+                        )
                       )
-                    )
-                  }
-                />
-              </td>
-              <td>
-                <button onClick={() => handleUpdate(char._id, char)}>Save</button>
-                <button onClick={() => handleDelete(char._id)}>Delete</button>
-              </td>
-            </tr>
-          ))}
+                    }
+                  />
+                </td>
+                <td>
+                  <button onClick={() => handleUpdate(char._id, char)}>Save</button>
+                  <button onClick={() => handleDelete(char._id)}>Delete</button>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>

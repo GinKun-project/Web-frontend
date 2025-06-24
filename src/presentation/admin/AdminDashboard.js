@@ -23,26 +23,26 @@ export default function AdminDashboard() {
 
   return (
     <div className="admin-dashboard">
-      <div className="admin-header">
-        <h2>👑 Admin Dashboard</h2>
-        <button className="logout-btn" onClick={handleLogout}>Logout</button>
-      </div>
-
-      <div className="admin-tabs">
-        <button
-          className={activeTab === "players" ? "active" : ""}
-          onClick={() => setActiveTab("players")}
-        >
-          Players
+      <div className="admin-navbar">
+        <div className="admin-navbar-title">👑 Admin Dashboard</div>
+        <div className="admin-navbar-tabs">
+          <button
+            className={`admin-navbar-tab${activeTab === "players" ? " active" : ""}`}
+            onClick={() => setActiveTab("players")}
+          >
+            Players
+          </button>
+          <button
+            className={`admin-navbar-tab${activeTab === "characters" ? " active" : ""}`}
+            onClick={() => setActiveTab("characters")}
+          >
+            Characters
+          </button>
+        </div>
+        <button className="admin-navbar-logout" onClick={handleLogout}>
+          Logout
         </button>
-        <button
-          className={activeTab === "characters" ? "active" : ""}
-          onClick={() => setActiveTab("characters")}
-        >
-          Characters
-        </button>
       </div>
-
       <div className="admin-content">
         {activeTab === "players" ? <PlayersCrud /> : <CharactersCrud />}
       </div>

@@ -20,8 +20,7 @@ export default function CharactersCrud() {
         setCharacters([]);
         setError("Invalid character list format");
       }
-    } catch (err) {
-      console.error("Character fetch error:", err.message);
+    } catch {
       setError("Network error while fetching characters");
     }
   };
@@ -36,7 +35,7 @@ export default function CharactersCrud() {
       await createCharacterUseCase(newChar);
       setNewChar({ name: "", type: "" });
       fetchCharacters();
-    } catch (err) {
+    } catch {
       setError("Error creating character");
     }
   };
@@ -45,7 +44,7 @@ export default function CharactersCrud() {
     try {
       await updateCharacterUseCase(id, updatedData);
       fetchCharacters();
-    } catch (err) {
+    } catch {
       setError("Error updating character");
     }
   };
@@ -54,7 +53,7 @@ export default function CharactersCrud() {
     try {
       await deleteCharacterUseCase(id);
       fetchCharacters();
-    } catch (err) {
+    } catch {
       setError("Error deleting character");
     }
   };
@@ -62,9 +61,7 @@ export default function CharactersCrud() {
   return (
     <div className="crud-panel">
       <h3>🧙‍♂️ Characters Management</h3>
-
       {error && <p style={{ color: "red" }}>{error}</p>}
-
       <div className="crud-create">
         <input
           type="text"
@@ -90,39 +87,38 @@ export default function CharactersCrud() {
           </tr>
         </thead>
         <tbody>
-          {Array.isArray(characters) &&
-            characters.map((char) => (
-              <tr key={char._id}>
-                <td>
-                  <input
-                    value={char.name}
-                    onChange={(e) =>
-                      setCharacters((prev) =>
-                        prev.map((c) =>
-                          c._id === char._id ? { ...c, name: e.target.value } : c
-                        )
+          {characters.map((char) => (
+            <tr key={char._id}>
+              <td>
+                <input
+                  value={char.name}
+                  onChange={(e) =>
+                    setCharacters((prev) =>
+                      prev.map((c) =>
+                        c._id === char._id ? { ...c, name: e.target.value } : c
                       )
-                    }
-                  />
-                </td>
-                <td>
-                  <input
-                    value={char.type}
-                    onChange={(e) =>
-                      setCharacters((prev) =>
-                        prev.map((c) =>
-                          c._id === char._id ? { ...c, type: e.target.value } : c
-                        )
+                    )
+                  }
+                />
+              </td>
+              <td>
+                <input
+                  value={char.type}
+                  onChange={(e) =>
+                    setCharacters((prev) =>
+                      prev.map((c) =>
+                        c._id === char._id ? { ...c, type: e.target.value } : c
                       )
-                    }
-                  />
-                </td>
-                <td>
-                  <button onClick={() => handleUpdate(char._id, char)}>Save</button>
-                  <button onClick={() => handleDelete(char._id)}>Delete</button>
-                </td>
-              </tr>
-            ))}
+                    )
+                  }
+                />
+              </td>
+              <td>
+                <button onClick={() => handleUpdate(char._id, char)}>Save</button>
+                <button onClick={() => handleDelete(char._id)}>Delete</button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

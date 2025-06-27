@@ -14,7 +14,6 @@ export default function PlayersCrud() {
   const fetchPlayers = async () => {
     try {
       const res = await getAllPlayersUseCase();
-
       if (res?.success && Array.isArray(res.data)) {
         setPlayers(res.data);
       } else {
@@ -22,7 +21,6 @@ export default function PlayersCrud() {
         setError("Failed to load players");
       }
     } catch (err) {
-      console.error("Fetch error:", err.message);
       setPlayers([]);
       setError("Network error while loading players");
     }
@@ -38,7 +36,7 @@ export default function PlayersCrud() {
       await createPlayerUseCase(newPlayer);
       setNewPlayer({ username: "", level: 1 });
       fetchPlayers();
-    } catch (err) {
+    } catch {
       setError("Failed to create player");
     }
   };
@@ -47,7 +45,7 @@ export default function PlayersCrud() {
     try {
       await updatePlayerUseCase(id, updatedData);
       fetchPlayers();
-    } catch (err) {
+    } catch {
       setError("Failed to update player");
     }
   };
@@ -56,7 +54,7 @@ export default function PlayersCrud() {
     try {
       await deletePlayerUseCase(id);
       fetchPlayers();
-    } catch (err) {
+    } catch {
       setError("Failed to delete player");
     }
   };
@@ -64,9 +62,7 @@ export default function PlayersCrud() {
   return (
     <div className="crud-panel">
       <h3>🎮 Players Management</h3>
-
       {error && <p style={{ color: "red" }}>{error}</p>}
-
       <div className="crud-create">
         <input
           type="text"
@@ -92,40 +88,39 @@ export default function PlayersCrud() {
           </tr>
         </thead>
         <tbody>
-          {Array.isArray(players) &&
-            players.map((player) => (
-              <tr key={player._id}>
-                <td>
-                  <input
-                    value={player.username}
-                    onChange={(e) =>
-                      setPlayers((prev) =>
-                        prev.map((p) =>
-                          p._id === player._id ? { ...p, username: e.target.value } : p
-                        )
+          {players.map((player) => (
+            <tr key={player._id}>
+              <td>
+                <input
+                  value={player.username}
+                  onChange={(e) =>
+                    setPlayers((prev) =>
+                      prev.map((p) =>
+                        p._id === player._id ? { ...p, username: e.target.value } : p
                       )
-                    }
-                  />
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    value={player.level}
-                    onChange={(e) =>
-                      setPlayers((prev) =>
-                        prev.map((p) =>
-                          p._id === player._id ? { ...p, level: Number(e.target.value) } : p
-                        )
+                    )
+                  }
+                />
+              </td>
+              <td>
+                <input
+                  type="number"
+                  value={player.level}
+                  onChange={(e) =>
+                    setPlayers((prev) =>
+                      prev.map((p) =>
+                        p._id === player._id ? { ...p, level: Number(e.target.value) } : p
                       )
-                    }
-                  />
-                </td>
-                <td>
-                  <button onClick={() => handleUpdate(player._id, player)}>Save</button>
-                  <button onClick={() => handleDelete(player._id)}>Delete</button>
-                </td>
-              </tr>
-            ))}
+                    )
+                  }
+                />
+              </td>
+              <td>
+                <button onClick={() => handleUpdate(player._id, player)}>Save</button>
+                <button onClick={() => handleDelete(player._id)}>Delete</button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

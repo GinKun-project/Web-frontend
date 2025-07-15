@@ -1,0 +1,39 @@
+.loader-container {
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.loader-title {
+  font-size: 3rem;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 20px #e94560;
+}
+
+.loader-bar {
+  width: 70%;
+  height: 20px;
+  background: #333;
+  border: 2px solid #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 20px #e94560;
+}
+
+.loader-fill {
+  height: 100%;
+  background: linear-gradient(to right, #e94560, #ff6b6b);
+  transition: width 0.1s ease-in-out;
+}
+
+.loader-text {
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  text-shadow: 0 0 5px #fff;
+}

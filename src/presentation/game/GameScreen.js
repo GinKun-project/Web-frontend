@@ -9,10 +9,10 @@ import SettingsPanel from "../settings/SettingsPanel";
 export default function GameScreen({ user, onLogout }) {
   const [showProfile, setShowProfile] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const navigate = useNavigate(); // ✅ Navigation hook
+  const navigate = useNavigate();
 
   const handleStartGame = () => {
-    navigate("/ingame"); // ✅ Correct target route
+    navigate("/loader"); 
   };
 
   const handleToggleProfile = () => {

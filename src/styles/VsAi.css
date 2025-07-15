@@ -1,0 +1,14 @@
+.vsai-wrapper {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  background: black;
+}
+
+.vsai-canvas {
+  width: 100vw;
+  height: 100vh;
+  display: block;
+}

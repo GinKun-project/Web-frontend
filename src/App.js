@@ -5,6 +5,7 @@ import LoginScreen from "./presentation/auth/LoginScreen";
 import SignupScreen from "./presentation/auth/SignupScreen";
 import GameScreen from "./presentation/game/GameScreen";
 import InGameScreen from "./presentation/game/InGameScreen";
+import GameLoader from "./presentation/game/GameLoader"; // ✅ added
 
 import AdminLogin from "./presentation/admin/AdminLogin";
 import AdminDashboard from "./presentation/admin/AdminDashboard";
@@ -30,16 +31,13 @@ function App() {
       navigate("/admin");
     } else if (token && userData) {
       setUser(JSON.parse(userData));
-      navigate("/game");
     }
   }, [navigate]);
 
-  const handleLogin = (username) => {
+  const handleLogin = () => {
     const userData = localStorage.getItem("userData");
     if (userData) {
       setUser(JSON.parse(userData));
-    } else {
-      setUser({ username });
     }
     navigate("/game");
   };
@@ -60,7 +58,6 @@ function App() {
   return (
     <div className="app-bg">
       <Routes>
-        {/* User Routes */}
         <Route
           path="/"
           element={
@@ -85,20 +82,20 @@ function App() {
           }
         />
         <Route
+          path="/loader"
+          element={user ? <GameLoader /> : <Navigate to="/" />} 
+        />
+        <Route
           path="/ingame"
           element={user ? <InGameScreen user={user} /> : <Navigate to="/" />}
         />
-
-        {/* Admin Routes */}
         <Route
           path="/admin-login"
           element={<AdminLogin onLogin={handleAdminLogin} />}
         />
         <Route
           path="/admin"
-          element={
-            adminToken ? <AdminDashboard /> : <Navigate to="/admin-login" />
-          }
+          element={adminToken ? <AdminDashboard /> : <Navigate to="/admin-login" />}
         />
       </Routes>
     </div>

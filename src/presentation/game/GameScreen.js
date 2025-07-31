@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/Dashboard.css";
-import { FaPlay, FaCog, FaTrophy, FaUser } from "react-icons/fa";
+import { FaPlay, FaCog, FaUser } from "react-icons/fa";
 import { AnimatePresence } from "framer-motion";
 import UserProfile from "./UserProfile";
 import SettingsPanel from "../settings/SettingsPanel";
@@ -63,9 +63,6 @@ export default function GameScreen({ user, onLogout }) {
             </button>
             <button className="dashboard-btn" onClick={handleSettingsClick}>
               <FaCog /> SETTINGS
-            </button>
-            <button className="dashboard-btn">
-              <FaTrophy /> ACHIEVEMENTS
             </button>
           </div>
         )}

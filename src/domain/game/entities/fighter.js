@@ -34,18 +34,20 @@ export class Fighter extends Sprite {
     this.draw(ctx);
     this.animateFrames();
 
-    // Attack box update
     this.attackBox.position.x = this.position.x + this.attackBox.offset.x;
     this.attackBox.position.y = this.position.y + this.attackBox.offset.y;
 
-    // Movement
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
 
-    // Gravity
-    if (this.position.y + this.height + this.velocity.y >= ctx.canvas.height) {
+    const canvas = ctx.canvas;
+    const charWidth = this.width * this.scale;
+    if (this.position.x < 40) this.position.x = 40;
+    if (this.position.x > canvas.width - charWidth - 40) this.position.x = canvas.width - charWidth - 40;
+
+    if (this.position.y + this.height + this.velocity.y >= canvas.height) {
       this.velocity.y = 0;
-      this.position.y = ctx.canvas.height - this.height;
+      this.position.y = canvas.height - this.height;
     } else {
       this.velocity.y += this.gravity;
     }
@@ -53,6 +55,13 @@ export class Fighter extends Sprite {
 
   attack() {
     this.isAttacking = true;
+    // Add visual feedback for AI attacks
+    if (this.image.src.includes('enemy')) {
+      this.attackEffect = true;
+      setTimeout(() => {
+        this.attackEffect = false;
+      }, 200);
+    }
     setTimeout(() => {
       this.isAttacking = false;
     }, 100);

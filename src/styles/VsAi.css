@@ -5,13 +5,52 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: black;
+  position: relative;
 }
 
 .vsai-canvas {
   display: block;
-  border: 2px solid lime;
-  background-color: #222;
-  max-width: 100%;
-  max-height: 100%;
+  width: 100vw;
+  height: 100vh;
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+
+@media (min-width: 1200px) {
+  .vsai-wrapper {
+  }
+}
+
+
+@media (min-width: 1920px) {
+  .vsai-wrapper {
+    
+  }
+}
+
+
+@media (min-width: 1366px) {
+  .vsai-wrapper {
+    
+  }
+}
+
+
+@media (min-width: 2560px) {
+  .vsai-wrapper {
+  }
+}
+
+
+.vsai-wrapper {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }

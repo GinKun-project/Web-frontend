@@ -5,4 +5,8 @@ export const defaultSettings = {
   musicVolume: 70,
   sfxVolume: 80,
   muteAll: false,
+  retroFilter: false,
+  theme: "Neon",
+  resolution: "Fit to Screen",
+  cursorStyle: "Crosshair",
 };

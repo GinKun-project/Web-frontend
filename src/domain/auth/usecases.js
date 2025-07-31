@@ -17,6 +17,13 @@ export const loginUseCase = async ({ email, password }) => {
   });
 };
 
+export const logoutUseCase = async () => {
+  const token = localStorage.getItem("authToken");
+  if (token) {
+    await authApi.logout(token);
+  }
+};
+
 // === Settings Use Cases ===
 
 export function updateSettingUseCase(key, value) {

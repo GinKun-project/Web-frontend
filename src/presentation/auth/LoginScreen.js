@@ -12,15 +12,12 @@ export default function LoginScreen({ onSignup, onLogin }) {
     setError("");
 
     try {
-      // Make login request to backend
       const res = await loginUseCase({email, password});   
 
-      // Save token and user to localStorage
       localStorage.setItem("authToken", res.token);
       localStorage.setItem("userData", JSON.stringify(res.user));
 
-      // Proceed to game screen
-      onLogin(res.user.username);
+      onLogin();
     } catch (err) {
       const message = err.response?.data?.message || "Login failed.";
       setError(message);

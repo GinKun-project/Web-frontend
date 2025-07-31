@@ -1,79 +1,56 @@
-// src/presentation/settings/sections/VisualSettings.js
+import React from "react";
 
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-
-export default function VisualSettings() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [retroFilter, setRetroFilter] = useState(false);
-  const [theme, setTheme] = useState("Neon");
-  const [resolution, setResolution] = useState("Fit to Screen");
-  const [cursorStyle, setCursorStyle] = useState("Crosshair");
+export default function VisualSettings({ settings, onSettingChange }) {
+  const handleChange = (key, value) => {
+    onSettingChange(key, value);
+  };
 
   return (
-    <div className="settings-section">
-      <div className="settings-header" onClick={() => setIsOpen(!isOpen)}>
-        <h3>🎨 Visual Settings</h3>
-        <span>{isOpen ? "▲" : "▼"}</span>
+    <div className="section-content">
+      <div className="setting-item">
+        <label>Retro Filter:</label>
+        <input
+          type="checkbox"
+          checked={settings.retroFilter || false}
+          onChange={(e) => handleChange("retroFilter", e.target.checked)}
+        />
       </div>
 
-      <AnimatePresence initial={false}>
-        {isOpen && (
-          <motion.div
-            className="settings-content"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            {/* Retro Filter */}
-            <div className="setting-item">
-              <label>Retro Filter:</label>
-              <input
-                type="checkbox"
-                checked={retroFilter}
-                onChange={() => setRetroFilter(!retroFilter)}
-              />
-            </div>
+      <div className="setting-item">
+        <label>Theme:</label>
+        <select 
+          value={settings.theme || "Neon"} 
+          onChange={(e) => handleChange("theme", e.target.value)}
+        >
+          <option value="Neon">Neon</option>
+          <option value="Dark Pixel">Dark Pixel</option>
+          <option value="High Contrast">High Contrast</option>
+        </select>
+      </div>
 
-            {/* Theme */}
-            <div className="setting-item">
-              <label>Theme:</label>
-              <select value={theme} onChange={(e) => setTheme(e.target.value)}>
-                <option>Neon</option>
-                <option>Dark Pixel</option>
-                <option>High Contrast</option>
-              </select>
-            </div>
+      <div className="setting-item">
+        <label>Resolution:</label>
+        <select
+          value={settings.resolution || "Fit to Screen"}
+          onChange={(e) => handleChange("resolution", e.target.value)}
+        >
+          <option value="Fit to Screen">Fit to Screen</option>
+          <option value="Fixed Pixel Mode">Fixed Pixel Mode</option>
+        </select>
+      </div>
 
-            {/* Resolution */}
-            <div className="setting-item">
-              <label>Resolution:</label>
-              <select
-                value={resolution}
-                onChange={(e) => setResolution(e.target.value)}
-              >
-                <option>Fit to Screen</option>
-                <option>Fixed Pixel Mode</option>
-              </select>
-            </div>
-
-            {/* Cursor Style */}
-            <div className="setting-item">
-              <label>Cursor Style:</label>
-              <select
-                value={cursorStyle}
-                onChange={(e) => setCursorStyle(e.target.value)}
-              >
-                <option>Crosshair</option>
-                <option>Fist</option>
-                <option>Classic</option>
-                <option>Neon Dot</option>
-              </select>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <div className="setting-item">
+        <label>Cursor Style:</label>
+        <select
+          value={settings.cursorStyle || "Crosshair"}
+          onChange={(e) => handleChange("cursorStyle", e.target.value)}
+        >
+          <option value="Crosshair">Crosshair</option>
+          <option value="Fist">Fist</option>
+          <option value="Classic">Classic</option>
+          <option value="Neon Dot">Neon Dot</option>
+        </select>
+      </div>
     </div>
   );
 }

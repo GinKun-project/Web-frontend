@@ -10,6 +10,7 @@
   color: white;
   font-family: 'Press Start 2P', monospace;
   image-rendering: pixelated;
+  justify-content: space-between;
 }
 
 .ingame-header {
@@ -29,10 +30,9 @@
 .ingame-main {
   display: flex;
   flex: 1;
-  margin-top: 2rem;
-  gap: 2rem;
   justify-content: center;
   align-items: center;
+  margin: 2rem 0;
 }
 
 .ingame-arena {
@@ -65,8 +65,9 @@
 }
 
 .ad-box {
-  width: 30vw;
-  min-height: 220px;
+  width: 100%;
+  max-width: 600px;
+  min-height: 180px;
   background: rgba(0, 0, 0, 0.75);
   border: 2px solid #fff;
   padding: 1.5rem;
@@ -75,6 +76,8 @@
   box-shadow: 0 0 10px #f0f;
   position: relative;
   overflow: hidden;
+  margin: 0 auto;
+  align-self: flex-end;
 }
 
 .ad-box h3 {

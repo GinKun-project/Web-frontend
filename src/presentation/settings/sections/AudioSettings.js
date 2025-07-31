@@ -1,46 +1,31 @@
-import React, { useState, useEffect } from "react";
-import { saveSetting, getSetting } from "../../../infrastructure/storage/settingsStorage";
+import React from "react";
 
-export default function AudioSettings() {
-  const [musicVolume, setMusicVolume] = useState(70);
-  const [sfxVolume, setSfxVolume] = useState(80);
-  const [mute, setMute] = useState(false);
-
-  // Load on mount
-  useEffect(() => {
-    setMusicVolume(getSetting("audio_music", 70));
-    setSfxVolume(getSetting("audio_sfx", 80));
-    setMute(getSetting("audio_mute", false));
-  }, []);
-
-  // Save when changed
-  useEffect(() => {
-    saveSetting("audio_music", musicVolume);
-    saveSetting("audio_sfx", sfxVolume);
-    saveSetting("audio_mute", mute);
-  }, [musicVolume, sfxVolume, mute]);
+export default function AudioSettings({ settings, onSettingChange }) {
+  const handleChange = (key, value) => {
+    onSettingChange(key, value);
+  };
 
   return (
     <div className="section-content">
       <div className="setting-item">
-        <label>Music Volume</label>
+        <label>Music Volume: {settings.musicVolume || 70}%</label>
         <input
           type="range"
           min="0"
           max="100"
-          value={musicVolume}
-          onChange={(e) => setMusicVolume(Number(e.target.value))}
+          value={settings.musicVolume || 70}
+          onChange={(e) => handleChange("musicVolume", Number(e.target.value))}
         />
       </div>
 
       <div className="setting-item">
-        <label>SFX Volume</label>
+        <label>SFX Volume: {settings.sfxVolume || 80}%</label>
         <input
           type="range"
           min="0"
           max="100"
-          value={sfxVolume}
-          onChange={(e) => setSfxVolume(Number(e.target.value))}
+          value={settings.sfxVolume || 80}
+          onChange={(e) => handleChange("sfxVolume", Number(e.target.value))}
         />
       </div>
 
@@ -48,8 +33,8 @@ export default function AudioSettings() {
         <label>
           <input
             type="checkbox"
-            checked={mute}
-            onChange={(e) => setMute(e.target.checked)}
+            checked={settings.muteAll || false}
+            onChange={(e) => handleChange("muteAll", e.target.checked)}
           />
           Mute All
         </label>

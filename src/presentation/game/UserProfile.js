@@ -3,8 +3,6 @@ import { motion } from "framer-motion";
 import "../../styles/UserProfile.css";
 
 export default function UserProfile({ user, onLogout, onClose }) {
-  console.log("Rendering profile"); // ✅ This will show if the component renders
-
   const ref = useRef();
 
   useEffect(() => {

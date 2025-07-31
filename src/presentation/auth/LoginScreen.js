@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { loginUserUseCase } from "../../domain/auth/usecases";
+import { loginUseCase } from "../../domain/auth/usecases";
 import "../../styles/Auth.css";
 
 export default function LoginScreen({ onSignup, onLogin }) {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");         
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
@@ -12,15 +12,12 @@ export default function LoginScreen({ onSignup, onLogin }) {
     setError("");
 
     try {
-      // 🔁 Make login request to backend
-      const res = await loginUserUseCase(username, password);
+      const res = await loginUseCase({email, password});   
 
-      // ✅ Save token and user to localStorage
       localStorage.setItem("authToken", res.token);
       localStorage.setItem("userData", JSON.stringify(res.user));
 
-      // 🔁 Proceed to game screen
-      onLogin(res.user.username);
+      onLogin();
     } catch (err) {
       const message = err.response?.data?.message || "Login failed.";
       setError(message);
@@ -32,10 +29,10 @@ export default function LoginScreen({ onSignup, onLogin }) {
       <h2 className="game-title">Shadow Clash</h2>
       <form onSubmit={handleSubmit} className="auth-form">
         <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}    
           required
         />
         <input

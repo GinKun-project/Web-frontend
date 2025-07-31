@@ -1,0 +1,105 @@
+.ingame-container {
+  width: 100vw;
+  height: 100vh;
+  background: url('/public/images/arena-bg.png') no-repeat center center;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  box-sizing: border-box;
+  color: white;
+  font-family: 'Press Start 2P', monospace;
+  image-rendering: pixelated;
+  justify-content: space-between;
+}
+
+.ingame-header {
+  text-align: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.75);
+  border-radius: 12px;
+  box-shadow: 0 0 10px #69f0ff;
+}
+
+.ingame-title {
+  font-size: 1rem;
+  color: #ff007f;
+  text-shadow: 0 0 4px #ff007f;
+}
+
+.ingame-main {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem 0;
+}
+
+.ingame-arena {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 12px;
+  box-shadow: 0 0 15px #ffffff33;
+}
+
+.ingame-btn {
+  background: #ed0858;
+  color: white;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  box-shadow: 0 0 5px #fff;
+  text-transform: uppercase;
+  transition: all 0.3s ease-in-out;
+}
+
+.ingame-btn:hover {
+  background: #ff4f91;
+  transform: scale(1.05);
+}
+
+.ad-box {
+  width: 100%;
+  max-width: 600px;
+  min-height: 180px;
+  background: rgba(0, 0, 0, 0.75);
+  border: 2px solid #fff;
+  padding: 1.5rem;
+  font-size: 0.7rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #f0f;
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+  align-self: flex-end;
+}
+
+.ad-box h3 {
+  color: #69f0ff;
+  margin-bottom: 1rem;
+  font-size: 0.8rem;
+}
+
+.ad-slide {
+  animation: slideFade 16s infinite;
+  opacity: 0;
+  position: absolute;
+  top: 3.5rem;
+  left: 1rem;
+  width: 90%;
+}
+
+@keyframes slideFade {
+  0%, 25% {
+    opacity: 1;
+  }
+  26%, 100% {
+    opacity: 0;
+  }
+}

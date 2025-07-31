@@ -1,15 +1,46 @@
 import axios from "axios";
 
-const API_BASE = "http://localhost:5000/api/auth";
+const BASE_URL = "http://localhost:5000/api/auth";
 
 export const authApi = {
-  signup: async (form) => {
-    const res = await axios.post(`${API_BASE}/signup`, form);
-    return res.data;
+  login: async (data) => {
+    const response = await axios.post(`${BASE_URL}/login`, data, {
+      headers: { "Content-Type": "application/json" }
+    });
+    return response.data;
   },
 
-  login: async (credentials) => {
-    const res = await axios.post(`${API_BASE}/login`, credentials);
-    return res.data;
+  signup: async (data) => {
+    const response = await axios.post(`${BASE_URL}/signup`, data, {
+      headers: { "Content-Type": "application/json" }
+    });
+    return response.data;
+  },
+
+  validateToken: async (token) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/validate`, {
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error("Token validation failed");
+    }
+  },
+
+  logout: async (token) => {
+    try {
+      await axios.post(`${BASE_URL}/logout`, {}, {
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      });
+    } catch (error) {
+      console.error("Logout request failed:", error);
+    }
   }
 };

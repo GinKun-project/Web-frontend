@@ -1,0 +1,246 @@
+/* Login */
+
+.admin-login-container {
+  background: rgba(24, 24, 44, 0.93);
+  padding: 2rem 2.5rem;
+  border-radius: 24px;
+  box-shadow: 0 0 18px #333;
+  width: 350px;
+  margin: 60px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.admin-login-title {
+  font-family: 'Orbitron', sans-serif;
+  color: #e94560;
+  letter-spacing: 2px;
+  font-size: 2.4rem;
+  margin-bottom: 2rem;
+  text-shadow: 2px 2px 8px #222;
+}
+
+.admin-login-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.admin-login-form input {
+  background: #1a1a2e;
+  color: #fff;
+  border: 2px solid #222;
+  border-radius: 10px;
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.admin-login-form input:focus {
+  border: 2px solid #e94560;
+}
+
+.admin-login-btn {
+  background: linear-gradient(90deg, #e94560 50%, #0f3460 100%);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.8rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  width: 100%;
+  transition: background 0.3s ease, transform 0.1s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.admin-login-btn:hover {
+  background: linear-gradient(90deg, #e94560 70%, #16213e 100%);
+  transform: translateY(-1px);
+}
+
+
+.admin-error,
+.admin-msg {
+  color: #e94560;
+  font-size: 0.98rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+
+/* ============== Admin Dashboard Styles ============== */
+.admin-dashboard {
+  padding: 2rem;
+  background-color: #1a1a1a;
+  color: #f1f1f1;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+}
+
+.admin-tabs {
+  margin-bottom: 0;
+}
+
+.admin-tab {
+  padding: 0.5rem 1.2rem;
+  border: 1px solid #666;
+  border-radius: 6px;
+  background-color: #2c2c2c;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.admin-tab:hover {
+  background-color: #444;
+}
+
+.admin-tab.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.crud-panel {
+  background-color: #2a2a2a;
+  border-radius: 8px;
+  padding: 1rem 2rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+}
+
+.crud-panel h3 {
+  margin-bottom: 1.5rem;
+  color: #ffc107;
+}
+
+.crud-create {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.crud-create input {
+  padding: 0.5rem;
+  border: none;
+  border-radius: 4px;
+  flex: 1;
+  background-color: #333;
+  color: #fff;
+}
+
+.crud-create button {
+  background-color: #28a745;
+  border: none;
+  padding: 0.5rem 1rem;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.crud-create button:hover {
+  background-color: #218838;
+}
+
+.crud-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.crud-table th,
+.crud-table td {
+  padding: 0.7rem;
+  text-align: left;
+  border-bottom: 1px solid #444;
+}
+
+.crud-table th {
+  background-color: #343a40;
+  color: #f8f9fa;
+}
+
+.crud-table input {
+  width: 100%;
+  padding: 0.4rem;
+  background-color: #222;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+}
+
+.crud-table button {
+  margin-right: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.crud-table button:first-of-type {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.crud-table button:last-of-type {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.crud-table button:hover {
+  opacity: 0.9;
+}
+
+/* Admin Navbar */
+.admin-navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #23234a;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+}
+.admin-navbar-title {
+  font-size: 1.6rem;
+  font-family: 'Orbitron', sans-serif;
+  color: #e94560;
+  letter-spacing: 1px;
+  font-weight: bold;
+}
+.admin-navbar-tabs {
+  display: flex;
+  gap: 1.5rem;
+}
+.admin-navbar-tab {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.1rem;
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  font-family: inherit;
+}
+.admin-navbar-tab.active, .admin-navbar-tab:hover {
+  background: #e94560;
+  color: #fff;
+}
+.admin-navbar-logout {
+  background: #e94560;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1.2rem;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: inherit;
+}
+.admin-navbar-logout:hover {
+  background: #c82333;
+}

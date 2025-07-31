@@ -187,6 +187,120 @@
   margin: 0.25rem 0;
 }
 
+/* === SETTINGS MESSAGES === */
+
+.settings-message {
+  padding: 0.8rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-align: center;
+  animation: fadeIn 0.3s ease-in;
+}
+
+.settings-message.success {
+  background: rgba(0, 255, 0, 0.2);
+  border: 1px solid #00ff00;
+  color: #00ff00;
+}
+
+.settings-message.error {
+  background: rgba(255, 0, 0, 0.2);
+  border: 1px solid #ff0000;
+  color: #ff0000;
+}
+
+.settings-message.info {
+  background: rgba(0, 150, 255, 0.2);
+  border: 1px solid #0096ff;
+  color: #0096ff;
+}
+
+/* === LOADING MESSAGE === */
+
+.loading-message {
+  text-align: center;
+  padding: 2rem;
+  color: #69f0ff;
+  font-size: 1rem;
+  animation: pulse 1.5s infinite;
+}
+
+/* === SETTINGS ACTIONS === */
+
+.settings-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #69f0ff;
+}
+
+.settings-btn {
+  flex: 1;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.settings-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.save-btn {
+  background: linear-gradient(135deg, #ff007f, #ff4f91);
+  color: white;
+  box-shadow: 0 2px 8px rgba(255, 0, 127, 0.3);
+}
+
+.save-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ff4f91, #ff007f);
+  box-shadow: 0 4px 12px rgba(255, 0, 127, 0.5);
+  transform: translateY(-2px);
+}
+
+.reset-btn {
+  background: linear-gradient(135deg, #ff6b35, #ff8c42);
+  color: white;
+  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+}
+
+.reset-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ff8c42, #ff6b35);
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.5);
+  transform: translateY(-2px);
+}
+
+/* === ANIMATIONS === */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
 /* === Responsive Tweak === */
 @media screen and (max-width: 768px) {
   .settings-panel {
@@ -199,5 +313,14 @@
 
   .settings-section-header {
     font-size: 0.8rem;
+  }
+
+  .settings-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .settings-btn {
+    padding: 1rem;
   }
 }

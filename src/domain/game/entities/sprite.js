@@ -49,14 +49,25 @@ export class Sprite {
       );
     } else {
       console.log('Drawing fallback rectangle for:', this.image.src, 'at position:', this.position);
-      ctx.fillStyle = this.image.src.includes('player') ? '#00ff00' : '#ff0000';
-      ctx.fillRect(this.position.x, this.position.y, 100, 150);
       
-      // Add some details to make characters more visible
+      // Draw character with better visibility
+      const charWidth = this.width * this.scale;
+      const charHeight = this.height * this.scale;
+      
+      // Draw character body
+      ctx.fillStyle = this.image.src.includes('player') ? '#00ff00' : '#ff0000';
+      ctx.fillRect(this.position.x, this.position.y, charWidth, charHeight);
+      
+      // Draw character outline for better visibility
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(this.position.x, this.position.y, charWidth, charHeight);
+      
+      // Add character label
       ctx.fillStyle = '#ffffff';
-      ctx.font = '20px Arial';
+      ctx.font = `${Math.max(12, 16 * this.scale)}px Arial`;
       ctx.fillText(this.image.src.includes('player') ? 'PLAYER' : 'ENEMY', 
-                   this.position.x, this.position.y - 10);
+                   this.position.x, this.position.y - 5);
     }
   }
 

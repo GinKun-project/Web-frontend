@@ -4,6 +4,8 @@ import { Fighter } from '../../domain/game/entities/fighter';
 import { useInputHandler } from '../../hooks/useInputHandler';
 import { useGameLoop } from '../../hooks/useGameLoop';
 import { runGameFrame } from '../../app/game/gameEngine';
+import { checkAndUpdateAchievementsUseCase } from '../../domain/achievements/usecases';
+import { gameStatsApi } from '../../data/gameStats/gameStatsApi';
 import playerImg from '../../assets/player.png';
 import enemyImg from '../../assets/enemy.png';
 import '../../styles/VsAi.css';
@@ -13,14 +15,81 @@ export default function VsAiGameScreen() {
   const playerRef = useRef();
   const enemyRef = useRef();
   const keys = useInputHandler();
-  const playerHealth = useRef(100);
-  const enemyHealth = useRef(100);
+  const playerHealth = useRef(200); // Increased HP for longer battles
+  const enemyHealth = useRef(200); // Increased HP for longer battles
   const navigate = useNavigate();
   const [gameTimer, setGameTimer] = useState(210);
   const [isPaused, setIsPaused] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
   const audioRef = useRef(null);
   const [muted, setMuted] = useState(false);
+  
+  // Game stats for achievements
+  const gameStats = useRef({
+    wins: 0,
+    aiWins: 0,
+    perfectWins: 0,
+    totalMatches: 0,
+    fastestWin: null,
+    comebackWins: 0,
+    criticalHits: 0,
+    damageDealt: 0,
+    damageTaken: 0,
+    matchStartTime: Date.now()
+  });
+  
+  // Critical hit display
+  const [criticalHitDisplay, setCriticalHitDisplay] = useState(null);
+  const [showCriticalHit, setShowCriticalHit] = useState(false);
+
+  // Function to handle critical hits
+  const handleCriticalHit = (attacker, target, isPlayerAttacking) => {
+    const criticalChance = 0.15; // 15% chance for critical hit
+    const isCritical = Math.random() < criticalChance;
+    
+    if (isCritical) {
+      const criticalDamage = Math.floor(target.health * 0.4); // 40% of current HP
+      target.takeHit(criticalDamage);
+      
+      // Update game stats
+      gameStats.current.criticalHits++;
+      if (isPlayerAttacking) {
+        gameStats.current.damageDealt += criticalDamage;
+      } else {
+        gameStats.current.damageTaken += criticalDamage;
+      }
+      
+      // Show critical hit display
+      setCriticalHitDisplay({
+        x: target.position.x + (target.width * target.scale) / 2,
+        y: target.position.y - 50,
+        damage: criticalDamage,
+        isPlayer: isPlayerAttacking
+      });
+      setShowCriticalHit(true);
+      
+      // Hide critical hit display after 2 seconds
+      setTimeout(() => {
+        setShowCriticalHit(false);
+        setCriticalHitDisplay(null);
+      }, 2000);
+      
+      return criticalDamage;
+    } else {
+      // Normal damage
+      const normalDamage = 15 + Math.floor(Math.random() * 10); // 15-25 damage
+      target.takeHit(normalDamage);
+      
+      // Update game stats
+      if (isPlayerAttacking) {
+        gameStats.current.damageDealt += normalDamage;
+      } else {
+        gameStats.current.damageTaken += normalDamage;
+      }
+      
+      return normalDamage;
+    }
+  };
 
   useEffect(() => {
     const initGame = () => {
@@ -29,30 +98,49 @@ export default function VsAiGameScreen() {
         setTimeout(initGame, 50);
         return;
       }
+      
+      // Set canvas to full window size
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      const charWidth = 50 * 0.35;
-      const charHeight = 150 * 0.35;
-      const gap = 60;
+      
+      // Calculate proper character dimensions
+      const baseWidth = 50;
+      const baseHeight = 150;
+      const scale = 0.3; // Reduced scale to make characters smaller and fit better
+      const charWidth = baseWidth * scale;
+      const charHeight = baseHeight * scale;
+      
+      // Calculate ground level - leave more margin from bottom for smaller characters
+      const groundLevel = canvas.height - charHeight - 80; // 80px margin from bottom
+      
+      // Calculate character positions with proper spacing
+      const gap = 120; // Reduced gap for smaller characters
       const initialPlayerX = canvas.width / 2 - charWidth - gap;
       const initialEnemyX = canvas.width / 2 + gap;
-      const groundLevel = canvas.height - charHeight;
+      
+      // Ensure characters are within screen bounds
+      const margin = 60; // Increased margin for better positioning
+      const finalPlayerX = Math.max(margin, Math.min(initialPlayerX, canvas.width - charWidth - margin));
+      const finalEnemyX = Math.max(margin, Math.min(initialEnemyX, canvas.width - charWidth - margin));
+      
       const player = new Fighter({
-        position: { x: initialPlayerX, y: groundLevel },
+        position: { x: finalPlayerX, y: groundLevel },
         velocity: { x: 0, y: 0 },
         imageSrc: playerImg,
-        scale: 0.35,
+        scale: scale,
         framesMax: 1,
         attackBox: { offset: { x: 14, y: 0 }, width: 28, height: 14 }
       });
+      
       const enemy = new Fighter({
-        position: { x: initialEnemyX, y: groundLevel },
+        position: { x: finalEnemyX, y: groundLevel },
         velocity: { x: 0, y: 0 },
         imageSrc: enemyImg,
-        scale: 0.35,
+        scale: scale,
         framesMax: 1,
         attackBox: { offset: { x: -28, y: 0 }, width: 28, height: 14 }
       });
+      
       playerRef.current = player;
       enemyRef.current = enemy;
       setIsInitialized(true);
@@ -68,19 +156,40 @@ export default function VsAiGameScreen() {
   useEffect(() => {
     const handleResize = () => {
       if (!canvasRef.current || !playerRef.current || !enemyRef.current) return;
+      
       const canvas = canvasRef.current;
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      const charHeight = 150 * 0.35;
-      const groundLevel = canvas.height - charHeight;
+      
+      // Recalculate ground level with proper margin
+      const charHeight = 150 * 0.3; // Use the same scale as initialization
+      const groundLevel = canvas.height - charHeight - 80; // 80px margin from bottom
+      
+      // Update character Y positions
       playerRef.current.position.y = groundLevel;
       enemyRef.current.position.y = groundLevel;
+      
+      // Ensure characters stay within screen bounds
       const charWidth = playerRef.current.width * playerRef.current.scale;
-      if (playerRef.current.position.x < 20) playerRef.current.position.x = 20;
-      if (playerRef.current.position.x > canvas.width - charWidth - 20) playerRef.current.position.x = canvas.width - charWidth - 20;
-      if (enemyRef.current.position.x < 20) enemyRef.current.position.x = 20;
-      if (enemyRef.current.position.x > canvas.width - charWidth - 20) enemyRef.current.position.x = canvas.width - charWidth - 20;
+      const margin = 60; // Increased margin from screen edges
+      
+      // Constrain player position
+      if (playerRef.current.position.x < margin) {
+        playerRef.current.position.x = margin;
+      }
+      if (playerRef.current.position.x > canvas.width - charWidth - margin) {
+        playerRef.current.position.x = canvas.width - charWidth - margin;
+      }
+      
+      // Constrain enemy position
+      if (enemyRef.current.position.x < margin) {
+        enemyRef.current.position.x = margin;
+      }
+      if (enemyRef.current.position.x > canvas.width - charWidth - margin) {
+        enemyRef.current.position.x = canvas.width - charWidth - margin;
+      }
     };
+    
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
@@ -133,7 +242,7 @@ export default function VsAiGameScreen() {
     };
   }, [muted]);
 
-  useGameLoop(() => {
+  useGameLoop(async () => {
     if (isPaused || !isInitialized) return;
     const canvas = canvasRef.current;
     if (!canvas) {
@@ -148,10 +257,14 @@ export default function VsAiGameScreen() {
     if (!player || !enemy) {
       return;
     }
+    
     const minutes = Math.floor(gameTimer / 60);
     const seconds = gameTimer % 60;
     const timerString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Enhanced game frame with critical hit system
     runGameFrame({
       ctx,
       canvas,
@@ -162,19 +275,77 @@ export default function VsAiGameScreen() {
         player: playerHealth.current,
         enemy: enemyHealth.current
       },
-      timer: timerString
+      timer: timerString,
+      handleCriticalHit: handleCriticalHit
     });
+    
     playerHealth.current = player.health;
     enemyHealth.current = enemy.health;
+    
+    // Check for game end and update achievements
     if (!isPaused) {
       if (enemy.health <= 0) {
         setIsPaused(true);
+        
+        // Update game stats for achievements
+        gameStats.current.wins++;
+        gameStats.current.totalMatches++;
+        
+        // Check for perfect win (no damage taken)
+        if (playerHealth.current >= 180) { // 90% HP remaining
+          gameStats.current.perfectWins++;
+        }
+        
+        // Check for fastest win
+        const matchDuration = (Date.now() - gameStats.current.matchStartTime) / 1000;
+        if (!gameStats.current.fastestWin || matchDuration < gameStats.current.fastestWin) {
+          gameStats.current.fastestWin = matchDuration;
+        }
+        
+        // Check for comeback win (was below 50% HP)
+        if (playerHealth.current < 100) {
+          gameStats.current.comebackWins++;
+        }
+        
+        // Update achievements and game stats
+        try {
+          // Update backend game stats
+          await gameStatsApi.updateGameStats(gameStats.current);
+          
+          // Check for new achievements
+          const newAchievements = await checkAndUpdateAchievementsUseCase(gameStats.current);
+          if (newAchievements.length > 0) {
+            console.log('New achievements unlocked:', newAchievements);
+          }
+        } catch (error) {
+          console.error('Error updating game stats:', error);
+        }
+        
         setTimeout(() => {
           alert('You Win!');
           navigate('/ingame');
         }, 1500);
       } else if (player.health <= 0) {
         setIsPaused(true);
+        
+        // Update game stats for achievements
+        gameStats.current.aiWins++;
+        gameStats.current.totalMatches++;
+        
+        // Update achievements and game stats
+        try {
+          // Update backend game stats
+          await gameStatsApi.updateGameStats(gameStats.current);
+          
+          // Check for new achievements
+          const newAchievements = await checkAndUpdateAchievementsUseCase(gameStats.current);
+          if (newAchievements.length > 0) {
+            console.log('New achievements unlocked:', newAchievements);
+          }
+        } catch (error) {
+          console.error('Error updating game stats:', error);
+        }
+        
         setTimeout(() => {
           alert('You Lose!');
           navigate('/ingame');
@@ -258,16 +429,44 @@ export default function VsAiGameScreen() {
           ESC Pause
         </div>
       </div>
+             {/* Background gradient for better visibility */}
+       <div 
+         style={{
+           position: 'absolute',
+           top: 0,
+           left: 0,
+           width: '100%',
+           height: '100%',
+           background: 'radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 70%)',
+           pointerEvents: 'none',
+           zIndex: 1
+         }}
+       />
+       {/* Arena background for better character visibility */}
+       <div 
+         style={{
+           position: 'absolute',
+           top: 0,
+           left: 0,
+           width: '100%',
+           height: '100%',
+           background: 'linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, transparent 50%, rgba(0, 0, 0, 0.2) 100%)',
+           pointerEvents: 'none',
+           zIndex: 1
+         }}
+       />
+      {/* Ground platform visualization */}
       <div 
         style={{
           position: 'absolute',
-          top: 0,
+          bottom: 80,
           left: 0,
           width: '100%',
-          height: '100%',
-          background: 'radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 70%)',
+          height: '4px',
+          background: 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 20%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0.3) 80%, transparent 100%)',
           pointerEvents: 'none',
-          zIndex: 1
+          zIndex: 2,
+          boxShadow: '0 0 10px rgba(255, 255, 255, 0.4)'
         }}
       />
       <div 
@@ -314,9 +513,43 @@ export default function VsAiGameScreen() {
         <div>Timer: {Math.floor(gameTimer / 60)}:{(gameTimer % 60).toString().padStart(2, '0')}</div>
         <div>Player HP: {playerHealth.current}</div>
         <div>Enemy HP: {enemyHealth.current}</div>
-        <div>AI Strategy: {enemyRef.current?.aiState?.currentStrategy || 'Unknown'}</div>
-        <div>AI Aggression: {enemyRef.current?.aiState?.aggressionLevel ? Math.round(enemyRef.current.aiState.aggressionLevel * 100) + '%' : 'Unknown'}</div>
-      </div>
+        <div>Player Pos: ({Math.round(playerRef.current?.position.x || 0)}, {Math.round(playerRef.current?.position.y || 0)})</div>
+        <div>Enemy Pos: ({Math.round(enemyRef.current?.position.x || 0)}, {Math.round(enemyRef.current?.position.y || 0)})</div>
+        <div>Canvas: {canvasRef.current?.width || 0} x {canvasRef.current?.height || 0}</div>
+                 <div>AI Strategy: {enemyRef.current?.aiState?.currentStrategy || 'Unknown'}</div>
+         <div>AI Aggression: {enemyRef.current?.aiState?.aggressionLevel ? Math.round(enemyRef.current.aiState.aggressionLevel * 100) + '%' : 'Unknown'}</div>
+         <div>Critical Hits: {gameStats.current.criticalHits}</div>
+         <div>Damage Dealt: {gameStats.current.damageDealt}</div>
+         <div>Damage Taken: {gameStats.current.damageTaken}</div>
+       </div>
+       
+       {/* Critical Hit Display */}
+       {showCriticalHit && criticalHitDisplay && (
+         <div 
+           style={{
+             position: 'absolute',
+             left: criticalHitDisplay.x - 100,
+             top: criticalHitDisplay.y,
+             zIndex: 1001,
+             color: '#ff4444',
+             fontFamily: 'monospace',
+             fontSize: '24px',
+             fontWeight: 'bold',
+             textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)',
+             animation: 'criticalHitAnimation 2s ease-out forwards',
+             pointerEvents: 'none'
+           }}
+         >
+           <div style={{ textAlign: 'center' }}>
+             <div style={{ color: '#ff0000', fontSize: '20px', marginBottom: '5px' }}>
+               CRITICAL HIT!
+             </div>
+             <div style={{ color: '#ffaa00', fontSize: '18px' }}>
+               -{criticalHitDisplay.damage}
+             </div>
+           </div>
+         </div>
+       )}
       {isPaused && (
         <div 
           style={{

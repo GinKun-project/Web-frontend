@@ -42,12 +42,18 @@ export class Fighter extends Sprite {
 
     const canvas = ctx.canvas;
     const charWidth = this.width * this.scale;
-    if (this.position.x < 40) this.position.x = 40;
-    if (this.position.x > canvas.width - charWidth - 40) this.position.x = canvas.width - charWidth - 40;
+    const charHeight = this.height * this.scale;
+    
+    // Constrain horizontal movement with proper margins
+    const margin = 60;
+    if (this.position.x < margin) this.position.x = margin;
+    if (this.position.x > canvas.width - charWidth - margin) this.position.x = canvas.width - charWidth - margin;
 
-    if (this.position.y + this.height + this.velocity.y >= canvas.height) {
+    // Ground collision with proper margin from bottom
+    const groundLevel = canvas.height - charHeight - 80; // 80px margin from bottom
+    if (this.position.y + charHeight + this.velocity.y >= groundLevel) {
       this.velocity.y = 0;
-      this.position.y = canvas.height - this.height;
+      this.position.y = groundLevel;
     } else {
       this.velocity.y += this.gravity;
     }

@@ -15,8 +15,8 @@ export default function VsAiGameScreen() {
   const playerRef = useRef();
   const enemyRef = useRef();
   const keys = useInputHandler();
-  const playerHealth = useRef(200); // Increased HP for longer battles
-  const enemyHealth = useRef(200); // Increased HP for longer battles
+  const playerHealth = useRef(200); 
+  const enemyHealth = useRef(200); 
   const navigate = useNavigate();
   const [gameTimer, setGameTimer] = useState(210);
   const [isPaused, setIsPaused] = useState(false);
@@ -106,20 +106,20 @@ export default function VsAiGameScreen() {
       // Calculate proper character dimensions
       const baseWidth = 50;
       const baseHeight = 150;
-      const scale = 0.3; // Reduced scale to make characters smaller and fit better
+      const scale = 0.3; 
       const charWidth = baseWidth * scale;
       const charHeight = baseHeight * scale;
       
       // Calculate ground level - leave more margin from bottom for smaller characters
-      const groundLevel = canvas.height - charHeight - 80; // 80px margin from bottom
+      const groundLevel = canvas.height - charHeight - 80; 
       
       // Calculate character positions with proper spacing
-      const gap = 120; // Reduced gap for smaller characters
+      const gap = 120; 
       const initialPlayerX = canvas.width / 2 - charWidth - gap;
       const initialEnemyX = canvas.width / 2 + gap;
       
       // Ensure characters are within screen bounds
-      const margin = 60; // Increased margin for better positioning
+      const margin = 60; 
       const finalPlayerX = Math.max(margin, Math.min(initialPlayerX, canvas.width - charWidth - margin));
       const finalEnemyX = Math.max(margin, Math.min(initialEnemyX, canvas.width - charWidth - margin));
       
